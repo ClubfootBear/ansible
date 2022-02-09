@@ -1,5 +1,0 @@
----
-- name: Create hello file
-  copy: 
-    content: "Welcome to my web server"
-    dest: '{{ index_path }}'
