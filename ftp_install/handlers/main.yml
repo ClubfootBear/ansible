@@ -1,0 +1,17 @@
+---
+# handlers file for ftp_install
+- name: Restart vsftpd
+  service:
+    name: vsftpd 
+    state: restarted
+
+- name: Start firewalld
+  service:
+    name: firewalld
+    state: started
+    enabled: yes
+
+- name: Restar firewalld
+  service:
+    name: firewalld
+    state: restarted

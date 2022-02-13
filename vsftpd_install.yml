@@ -3,4 +3,4 @@
   become: True
   remote_user: root
   roles:
-    - create_users
+    - ftp_install
