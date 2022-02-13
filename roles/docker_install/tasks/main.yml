@@ -1,0 +1,26 @@
+---
+# tasks file for docker_engine_install
+- name: Detect architecture.
+  include_tasks: detect-architecture.yml
+
+- name: Install Docker RedHat system.
+  include_tasks: install-docker-RedHat.yml
+  when: ansible_os_family == 'RedHat'
+
+- name: Install Docker Debian system.
+  include_tasks: install-docker-Debian.yml
+  when: ansible_os_family == 'Debian'
+
+- name: Ensure Docker service is enabled and started.
+  systemd:
+    name: docker
+    enabled: yes
+    state: started
+
+- name: Install Docker SDK for Python.
+  include_tasks: install-docker-sdk-for-python.yml
+  when: docker_sdk_for_python_install
+
+- name: Install Docker Compose.
+  include_tasks: install-docker-compose.yml
+  when: docker_compose_install

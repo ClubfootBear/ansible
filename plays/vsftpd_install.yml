@@ -1,0 +1,6 @@
+---
+- hosts: digital_oceans_vps
+  become: True
+  remote_user: root
+  roles:
+    - ftp_install

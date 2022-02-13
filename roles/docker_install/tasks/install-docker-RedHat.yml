@@ -1,0 +1,46 @@
+---
+- name: Uninstall old version
+  yum:
+    name: "{{ item }}"
+    state: absent
+  loop:
+    - docker
+    - docker-client
+    - docker-client-latest
+    - docker-common
+    - docker-latest
+    - docker-latest-logrotate
+    - docker-logrotate
+    - docker-engine
+
+- name: Install docker engine package
+  yum:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  loop:
+    - yum-utils
+  ignore_errors: true
+
+- name: Add Docker GPG key.
+  rpm_key:
+    key: https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg
+    state: present
+
+- name: Configure Docker repository.
+  get_url:
+    url: https://download.docker.com/linux/{{ ansible_distribution | lower }}/docker-ce.repo
+    dest: /etc/yum.repos.d/docker-ce.repo
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Install Docker Engine.
+  yum:
+    name:
+      - "{{ item }}"
+    state: present
+  loop:
+    - docker-ce 
+    - docker-ce-cli
+    - containerd.io

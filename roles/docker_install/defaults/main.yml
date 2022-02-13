@@ -1,0 +1,19 @@
+---
+# defaults file for docker_engine_install
+# List of Docker supported architectures
+docker_supported_architectures: ["x86_64", "arm64", "armhf", "s390x"]
+
+# If True, Docker SDK for Python will be installed
+docker_sdk_for_python_install: true
+
+# Docker SDK for Python version
+docker_sdk_for_python_version: "latest"
+
+# If True, Docker Compose will be installed
+docker_compose_install: true
+
+# If True, Docker Compose bash completion will be installed
+docker_compose_bash_completion_install: true
+
+# If the true install zsh for completition docker commands
+install_zsh: true
