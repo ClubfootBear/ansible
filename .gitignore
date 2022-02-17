@@ -3,3 +3,10 @@ ansible/*
 terraform.*
 variables.tf
 venv/*
+.terraform.lock.hcl
+README.md
+ansible10.yml
+do_inventory.tpl
+do_t
+main.tf
+outputs.tf
