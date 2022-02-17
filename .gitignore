@@ -1,0 +1,5 @@
+.terraform/*
+ansible/*
+terraform.*
+variables.tf
+venv/*
