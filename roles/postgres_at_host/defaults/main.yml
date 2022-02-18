@@ -1,0 +1,39 @@
+---
+# defaults file for postgres_at_host
+
+
+# Specify version of postgresql
+postgresql_version: 12
+postgres_conf_dir: "/etc/postgresql/{{ postgresql_version }}/main/"
+postgres_port: 5432
+postgres_listen_addresses: 127.0.0.1
+
+postgres_users:
+  - name: intial_super_user
+    role_attrs: SUPERUSER
+    password: AllCanTheKings
+
+postgres_dbs:
+  - name: rnis_gits
+    owner: intial_super_user
+  - name: rnis_marks
+    owner: intial_super_user
+  - name: rnis_logs
+    owner: intial_super_user
+  - name: rnis_corrector
+    owner: intial_super_user
+
+
+
+
+
+# vars file for postgres
+
+
+_postgres_dir:
+  default: /var/lib/pgsql/data
+  Alpine: /var/lib/pgsql
+  Debian: /var/lib/postgresql/11
+
+postgres_dir: "{{ _postgres_dir[ansible_os_family] | default(_postgres_dir['default'] ) }}"
+

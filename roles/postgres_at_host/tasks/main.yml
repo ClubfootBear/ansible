@@ -1,0 +1,102 @@
+---
+# tasks file for postgres_at_host
+
+- name: Add repo for postgresql
+  ansible.builtin.apt_repository:
+    repo: "{{ item }}"
+    state: present
+  loop:
+    - "deb http://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main"
+
+
+- name: Add the repository signing key
+  apt_key:
+    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+    state: present
+
+- name: Install postgresql packages
+  apt: 
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  loop:
+    - "postgresql-{{ postgresql_version }}"
+  notify: Enable postgresql
+
+- name: Uncomment needed strings in postgresql config file
+  replace:
+    path: "{{ postgres_conf_dir }}/postgresql.conf"
+    backup: yes
+    regexp: "^#({{ item.name }} =.*)"
+    replace: '\1'
+  loop:
+  - name: port
+  - name: listen_addresses
+
+- name: Configure postgres file
+  ansible.builtin.lineinfile:
+    path: "{{ postgres_conf_dir }}/postgresql.conf"
+    backup: yes
+    regex: "^{{ item.name }} =(.*)"
+    line: "{{ item.name }} = '{{ item.value }}'"
+  notify:
+    - Restart postgres
+  loop:
+    - name: port
+      value: "{{ postgres_port }}"
+    - name: listen_addresses
+      value: "{{ postgres_listen_addresses }}"
+
+
+################ATTENTION#################
+
+# for working this module required to install
+# ansible-galaxy collection install community.postgresql
+# url: shorturl.at/dDEH4
+
+
+- name: Install requirements
+  apt:
+    - name: python3-pip
+    - state: present
+    - update_cache: yes
+
+- name: "Install Python packages"
+  pip:
+    name: "{{ item }}"
+    state: present"
+  loop:
+    - psycopg2-binary
+
+
+- name: create PostgreSQL users
+  postgresql_user: 
+    name: "{{ item.name }}"
+    password: "{{ item.password }}"
+    role_attr_flags: "{{ item.role_attrs }}"
+    state: present
+    port: "{{ postgres_port }}"
+  loop: "{{ postgres_users }}"
+
+
+- name: create PostgreSQL databases
+  postgresql_db: 
+    name: "{{ item.name }}"
+    owner: "{{ item.owner }}"
+    state: present
+    port: "{{ postgres_port }}"
+  loop: "{{ postgres_dbs }}"
+
+
+# - name: create posgis extension in every database
+#   shell: "sudo -u postgres psql -d {{ item.name }} -p {{postgres.port}} -c 'CREATE EXTENSION postgis;'"
+#   when: postgresql_initial == "y"
+#   with_items: '{{postgres.dbs}}'
+
+
+# # postgres nightly backup
+# - cron: name="backup db {{ item.name }} on port {{ postgres.port }}" hour="2" minute="0"
+#         user="postgres" job="pg_dump -p{{ postgres.port }} {{ item.name }} > /backup/{{ postgres.cluster_name }}-{{ item.name }}.sql"
+#         cron_file="postgres_backup"
+#   with_items: '{{postgres.dbs}}'
+

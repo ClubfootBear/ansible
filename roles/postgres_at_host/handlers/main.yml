@@ -1,0 +1,13 @@
+---
+# handlers file for postgres_at_host
+
+- name: Enable postgresql
+  service:
+    name: postgresql
+    state: started
+    enabled: yes
+
+- name: Restart postgres
+  service:
+    name: postgresql
+    state: restarted

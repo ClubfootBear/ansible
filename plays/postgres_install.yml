@@ -3,4 +3,4 @@
   become: True
   remote_user: root
   roles:
-    - ../roles/create_users
+    - ../roles/postgres_at_host

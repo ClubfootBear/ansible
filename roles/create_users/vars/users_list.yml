@@ -2,13 +2,13 @@
 users:
   - name: alice
     email: alice@example.com
-    is_create_home: yes
+    is_create_home: true
     password: "{{ users_password.alice }}"
   - name: bob
     email: bob@example.com
-    is_create_home: yes
+    is_create_home: true
     password: "{{ users_password.bob }}"
   - name: carol
     email: carol@example.com
-    is_create_home: yes
-    password: "{{ users_password.carol }}"
+    is_create_home: true
+    password: "{{ users_password.carol }}" 
